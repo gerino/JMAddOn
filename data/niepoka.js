@@ -17,12 +17,12 @@ function performReplace(ignoredUsers){
 			if(ignoredUsers.indexOf(name) == -1){
 				$(this).append($('<a/>').text('Ignoruj').attr('data-name',name).attr('style', 'cursor: pointer;text-decoration:none;font-size:10px;color:#aaa').addClass('niepoka_addignore'));
 			} else{
-				$(this).append($('<span/>').text('(Użytkownik ignorowany)'));
+				$(this).append($('<span/>').text('(Użytkownik ignorowany)').attr('style', 'text-decoration:none;font-size:10px;color:#aaa'));
 			}
 		});
 		$('.niepoka_addignore').on('click', function(){
 			try{
-				self.port.emit('niepoka_addperson', $(this).attr('data-name').attr('style', 'text-decoration:none;font-size:10px;color:#aaa'));
+				self.port.emit('niepoka_addperson', $(this).attr('data-name'));
 				$(this).replaceWith($('<span/>').text('Dodano').attr('style', 'text-decoration:none;font-size:10px;color:#aaa'));
 			} catch(e){
 				alert(e);
