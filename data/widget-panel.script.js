@@ -1,4 +1,4 @@
-back();
+﻿back();
 //$('#btnNiePoka').button();
 //$('#btnNiePoka').button().click(showPage('NiePoka'));
 $('#btnBack').button();
@@ -26,8 +26,8 @@ function back(initial){
 	$('#back').hide();
 }
 
-// additional
-$( "#dialog-form" ).dialog({
+// === Add Person ===
+$('#dialog-form').dialog({
 autoOpen: false,
       height: 300,
       width: 350,
@@ -35,36 +35,38 @@ autoOpen: false,
 	  buttons: {
 		"Dodaj": function() {
 			try{
-			var name = $( "#name" );
-			var tips = $( ".validateTips" );
-			name.removeClass( "ui-state-error" );
+			var name = $('#name');
+			var tips = $('.validateTips');
+			name.removeClass('ui-state-error');
 			
 			if(name.val().length == 0){
-				name.addClass( "ui-state-error" );
-				tips.addClass( "ui-state-highlight" );
+				name.addClass('ui-state-error');
+				tips.addClass('ui-state-highlight');
 				  setTimeout(function() {
-					tips.removeClass( "ui-state-highlight", 1500 );
+					tips.removeClass('ui-state-highlight', 1500 );
 				  }, 500 );
 			}
 			self.port.emit('niepoka_addperson', name.val());
 			}catch(e){
 				alert(e);
 			}
-			$( this ).dialog( "close" );
+			$( this ).dialog('close');
 		},
 		Cancel: function() {
-		  $( this ).dialog( "close" );
+		  $( this ).dialog('close');
 		}
 	  },
 	  close: function() {
-        $( "#name" ).val( "" ).removeClass( "ui-state-error" );
+        $('#name').val('').removeClass( "ui-state-error" );
       }
 	});
-$( "#btnAddPerson" )
+$('#btnAddPerson')
       .button()
       .click(function() {
         $( "#dialog-form" ).dialog( "open" );
       });
+	  
+// === Ignore List ===
 $('#dialog-ignorelist').dialog({
 		autoOpen: false,
 		height: 300,
@@ -102,6 +104,37 @@ self.port.on('niepoka_ignorelist_show', function(list){
 			table.append(tr);
 		}
 		$('#dialog-ignorelist').append(table);
-		$('#dialog-ignorelist').dialog("open");
+		$('#dialog-ignorelist').dialog('open');
 	}
+});
+
+// === Hide Mode ===
+$('#dialog-hidemode').dialog({
+		autoOpen: false,
+		height: 300,
+		width: 350,
+		modal: true,
+		buttons: {
+			"Zamknij": function(){
+				$(this).dialog("close");
+			}
+		},
+		close: function(){
+			$(this).empty();
+		}
+	});
+$('#btnHideMode').button().click(function(){
+	self.port.emit('niepoka_hidemode_get');
+});
+self.port.on('niepoka_hidemode_show', function(silentMode){
+	var textEnabled = 'Tryb cichy włączony - posty ignorowanych użytkowników znikają bez śladu.';
+	var textDisabled = 'Tryb cichy wyłączony - widzisz nagłówki ukrytych postów oraz możesz je na życzenie wyświetlić.';
+	var content = $('<span/>').text(silentMode ? textEnabled : textDisabled);
+	var btnSwitch = $('<button/>').attr('style', 'display: block;').text('Zmień').click(function(){
+		self.port.emit('niepoka_hidemode_switch');
+		self.port.emit('niepoka_hidemode_get');
+		$(this).parent().dialog('close');
+	});
+	$('#dialog-hidemode').append(content).append(btnSwitch);
+	$('#dialog-hidemode').dialog('open');
 });

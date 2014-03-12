@@ -1,6 +1,8 @@
 ﻿self.port.on('performReplace', function(list){performReplace(list);});
 
-function performReplace(ignoredUsers){
+function performReplace(data){
+	var ignoredUsers = data.list;
+	var	silentMode = data.mode;
 	if(ignoredUsers == null || ignoredUsers == undefined)
 		ignoredUsers = [];
 	
@@ -34,10 +36,14 @@ function performReplace(ignoredUsers){
 			$('div#forumLeft > div.postBox:has(div:has(a[href="/bojownik/'+userName+'"]))').each(function(){
 				var prev = $(this).prev();
 				$(this).hide();
-				$(this).detach();
-				var box = getReplacementBox(userName, $(this));
-				box.prepend($(this));
-				prev.after(box);
+				if(silentMode){
+					prev.hide();
+				} else{
+					$(this).detach();
+					var box = getReplacementBox(userName, $(this));
+					box.prepend($(this));
+					prev.after(box);
+				}
 			});
 		}
 	}
