@@ -15,15 +15,15 @@ function performReplace(ignoredUsers){
 		$('.postHeader').each(function(){
 			var name = $(this).find('a[href*="/bojownik/"]').attr('href').replace('/bojownik/','');
 			if(ignoredUsers.indexOf(name) == -1){
-				$(this).append($('<a/>').text('Ignoruj').attr('data-name',name).attr('style', 'cursor: pointer').addClass('niepoka_addignore'));
+				$(this).append($('<a/>').text('Ignoruj').attr('data-name',name).attr('style', 'cursor: pointer;text-decoration:none;font-size:10px;color:#aaa').addClass('niepoka_addignore'));
 			} else{
 				$(this).append($('<span/>').text('(Użytkownik ignorowany)'));
 			}
 		});
 		$('.niepoka_addignore').on('click', function(){
 			try{
-				self.port.emit('niepoka_addperson', $(this).attr('data-name'));
-				$(this).replaceWith($('<span/>').text('Dodano'));
+				self.port.emit('niepoka_addperson', $(this).attr('data-name').attr('style', 'text-decoration:none;font-size:10px;color:#aaa'));
+				$(this).replaceWith($('<span/>').text('Dodano').attr('style', 'text-decoration:none;font-size:10px;color:#aaa'));
 			} catch(e){
 				alert(e);
 			}
